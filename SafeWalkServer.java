@@ -35,18 +35,19 @@ public class SafeWalkServer implements Serializable {
                 
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String s = in.readLine();
-                in.close();
+                //in.close();
                 System.out.printf("%s\n", s);
+                
           
-                PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
-                out.flush();
+                
                 
                 
                 // Structure that excecutes correct steps for specific client inputs
                 
                 if (s.startsWith(":")) {
                     if (s.equals(":LIST_PENDING_REQUESTS")) { 
-                        
+                        PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+                        out.flush();
                         out.println("Printing Pending Requests...");
                         out.flush();
                         in.close();
@@ -62,17 +63,15 @@ public class SafeWalkServer implements Serializable {
                             outc.flush();
                             outc.close();
                             c.close();
-                            clientSockets.remove(c);
-                            
                         }
                         clientSockets.clear();
-                      
+                        PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+                        out.flush();
                         out.println("Response: Success");
                         out.flush();
                         out.close();
                         in.close();
-                        client.close();
-                        
+                        client.close(); 
                     }
                     // Shuts down the server if client inputs command SHUTDOWN
                     else if (s.equals(":SHUTDOWN")) {
@@ -82,12 +81,12 @@ public class SafeWalkServer implements Serializable {
                             outc.println("ERROR: connection shutdown");
                             outc.flush();
                             outc.close();
-                            c.close();
-                            clientSockets.remove(c); 
+                            c.close(); 
                         } 
                         clientSockets.clear();
                         
-                        
+                        PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+                        out.flush();
                         out.println("Response: Success");
                         out.flush();
                         out.close();
@@ -101,7 +100,8 @@ public class SafeWalkServer implements Serializable {
                     // Responsds to client if invalid command was given
                     else {
                         
-                      
+                        PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+                        out.flush();
                         out.println("ERROR: Invalid Command");
                         out.flush();
                         out.close();
@@ -112,9 +112,10 @@ public class SafeWalkServer implements Serializable {
                 else {
                     // Adds client to pendinglist
                     clientSockets.add(client);
-                    client.close();
+                    
                 }
-                out.close();
+                
+                
             } catch (Exception e) {  
             }
             

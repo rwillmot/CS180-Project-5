@@ -35,18 +35,20 @@ public class SafeWalkServer implements Serializable {
                 
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String s = in.readLine();
-                //s.toUpperCase();
-                
+                in.close();
+                System.out.printf("%s\n", s);
+          
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                 out.flush();
+                
                 
                 // Structure that excecutes correct steps for specific client inputs
                 
                 if (s.startsWith(":")) {
-                    
-                    
                     if (s.equals(":LIST_PENDING_REQUESTS")) { 
+                        
                         out.println("Printing Pending Requests...");
+                        out.flush();
                         in.close();
                         client.close();
                     }
@@ -64,7 +66,7 @@ public class SafeWalkServer implements Serializable {
                             
                         }
                         clientSockets.clear();
-                        
+                      
                         out.println("Response: Success");
                         out.flush();
                         out.close();
@@ -84,6 +86,8 @@ public class SafeWalkServer implements Serializable {
                             clientSockets.remove(c); 
                         } 
                         clientSockets.clear();
+                        
+                        
                         out.println("Response: Success");
                         out.flush();
                         out.close();
@@ -96,6 +100,8 @@ public class SafeWalkServer implements Serializable {
                     }
                     // Responsds to client if invalid command was given
                     else {
+                        
+                      
                         out.println("ERROR: Invalid Command");
                         out.flush();
                         out.close();
@@ -106,9 +112,9 @@ public class SafeWalkServer implements Serializable {
                 else {
                     // Adds client to pendinglist
                     clientSockets.add(client);
+                    client.close();
                 }
                 out.close();
-                //client.close();
             } catch (Exception e) {  
             }
             

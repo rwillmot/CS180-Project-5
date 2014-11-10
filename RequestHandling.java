@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class RequestHandling {
     class Request {
         String name;
@@ -5,6 +7,7 @@ public class RequestHandling {
         String to;
         String type;
     }
+    ArrayList<Request> clientList;
     
     public static boolean isValid (String s) {
         String[] locations = {"CL50", "EE", "LWSN", "PMU", "PUSH", "*"};
@@ -29,5 +32,22 @@ public class RequestHandling {
             return false;
         
         return true;
+    }
+    
+    public void handleRequest (String s) {
+        String[] tokens = s.split(",");
+        Request lol = new Request();
+        lol.name = tokens[0];
+        lol.from = tokens[1];
+        lol.to = tokens[2];
+        lol.type = tokens[3];
+        
+        for (Request r : clientList) {
+            if (r.from.equals(lol.from)) {
+                if (r.to.equals(lol.to) || (r.to.equals("*") ^ lol.to.equals("*"))) {
+                    // Match the clients
+                }
+            }
+        }
     }
 }

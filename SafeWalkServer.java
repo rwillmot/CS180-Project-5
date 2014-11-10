@@ -2,9 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-
 public class SafeWalkServer implements Serializable {
-   
     int port;
     final ServerSocket serverSocket;
     
@@ -23,27 +21,18 @@ public class SafeWalkServer implements Serializable {
     public int getLocalPort() {
         return port;
     }
-
  
     // Run Method
     public void run() {
         ArrayList<Socket> clientSockets = new ArrayList<Socket>();
         while (true) {
             try {
-                
                 Socket client = serverSocket.accept();
-                
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String s = in.readLine();
-                //in.close();
                 System.out.printf("%s\n", s);
-                
-          
-                
-                
-                
+
                 // Structure that excecutes correct steps for specific client inputs
-                
                 if (s.startsWith(":")) {
                     if (s.equals(":LIST_PENDING_REQUESTS")) { 
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -93,8 +82,6 @@ public class SafeWalkServer implements Serializable {
                         in.close();
                         client.close();
                         serverSocket.close();
-                        
-                        //System.out.println("ServerSocket closed");
                         return;
                     }
                     // Responsds to client if invalid command was given
@@ -111,43 +98,28 @@ public class SafeWalkServer implements Serializable {
                 }
                 else {
                     // Adds client to pendinglist
-                    clientSockets.add(client);
-                    
-                }
-                
-                
+                    clientSockets.add(client);   
+                }   
             } catch (Exception e) {  
-            }
-            
+            }   
         }
-       
     }
-    
     
     // Main Method
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         if (args.length == 0) {
             SafeWalkServer safe = new SafeWalkServer();
             System.out.printf("Port not specified. Using free port %d\n", safe.getLocalPort());
-            safe.run();
-           
-            
+            safe.run(); 
         }
         else if (args.length == 1) {
             if (Integer.parseInt(args[0]) < 1025 || Integer.parseInt(args[0]) > 65535) {
                 System.out.println("Error: Port number invalid. Exiting Program . . .");
-               
             }
             else {
                 SafeWalkServer safe = new SafeWalkServer(Integer.parseInt(args[0]));
                 safe.run();
-              
-              
             }
-
-            
         }
-        
     }
-
 }

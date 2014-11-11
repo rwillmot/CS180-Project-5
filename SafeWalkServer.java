@@ -30,7 +30,7 @@ public class SafeWalkServer implements Serializable, Runnable {
                 Socket client = serverSocket.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String s = in.readLine();
-                System.out.printf("%s\n", s);
+                //System.out.printf("%s\n", s);
 
                 // Structure that excecutes correct steps for specific client inputs
                 if (s.startsWith(":")) {

@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class SafeWalkServer implements Serializable {
+public class SafeWalkServer implements Serializable, Runnable {
     int port;
     final ServerSocket serverSocket;
     
@@ -78,7 +78,7 @@ public class SafeWalkServer implements Serializable {
                         out.flush();
                         out.println("Response: Success");
                         out.flush();
-                        out.close();
+                        out.close(); 
                         in.close();
                         client.close();
                         serverSocket.close();

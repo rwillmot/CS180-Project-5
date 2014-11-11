@@ -5,6 +5,15 @@ import java.util.*;
 public class SafeWalkServer implements Serializable, Runnable {
     int port;
     final ServerSocket serverSocket;
+    private ArrayList<Request> clientList = new ArrayList<Request>();
+    
+    class Request {
+        String name;
+        String from;
+        String to;
+        String type;
+        Socket client;
+    }
     
     public SafeWalkServer(int port) throws SocketException, IOException {
         this.serverSocket = new ServerSocket(port);
@@ -24,7 +33,6 @@ public class SafeWalkServer implements Serializable, Runnable {
  
     // Run Method
     public void run() {
-        ArrayList<Socket> clientSockets = new ArrayList<Socket>();
         while (true) {
             try {
                 Socket client = serverSocket.accept();
@@ -45,15 +53,15 @@ public class SafeWalkServer implements Serializable, Runnable {
                     // Resets the server if client inputs command RESET
                     else if (s.equals(":RESET")) {
                         
-                        for (Socket c: clientSockets) {
-                            PrintWriter outc = new PrintWriter(new OutputStreamWriter(c.getOutputStream()));
+                        for (Request c: clientList) {
+                            PrintWriter outc = new PrintWriter(new OutputStreamWriter(c.client.getOutputStream()));
                             outc.flush();
                             outc.println("ERROR: connection reset");
                             outc.flush();
                             outc.close();
-                            c.close();
+                            c.client.close();
                         }
-                        clientSockets.clear();
+                        clientList.clear();
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
                         out.println("Response: Success");
@@ -64,21 +72,21 @@ public class SafeWalkServer implements Serializable, Runnable {
                     }
                     // Shuts down the server if client inputs command SHUTDOWN
                     else if (s.equals(":SHUTDOWN")) {
-                        for (Socket c: clientSockets) {
-                            PrintWriter outc = new PrintWriter(new OutputStreamWriter(c.getOutputStream()));
+                        for (Request c: clientList) {
+                            PrintWriter outc = new PrintWriter(new OutputStreamWriter(c.client.getOutputStream()));
                             outc.flush();
                             outc.println("ERROR: connection shutdown");
                             outc.flush();
                             outc.close();
-                            c.close(); 
+                            c.client.close(); 
                         } 
-                        clientSockets.clear();
+                        clientList.clear();
                         
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
                         out.println("Response: Success");
                         out.flush();
-                        out.close(); 
+                        out.close();
                         in.close();
                         client.close();
                         serverSocket.close();
@@ -96,10 +104,34 @@ public class SafeWalkServer implements Serializable, Runnable {
                         client.close();
                     }
                 }
-                else {
-                    // Adds client to pendinglist
-                    clientSockets.add(client);   
-                }   
+                else {                    
+                    if (isValid(s)) {
+                        String[] tokens = s.split(",");
+                        Request lol = new Request();
+                        lol.name = tokens[0];
+                        lol.from = tokens[1];
+                        lol.to = tokens[2];
+                        lol.type = tokens[3];
+                        lol.client = client;
+                        
+                        clientList.add(lol);
+                        
+                        for (Request r : clientList) {
+                            if (!r.name.equals(lol.name)) {
+                                if (r.from.equals(lol.from)) {
+                                    if (r.to.equals(lol.to) || (r.to.equals("*") ^ lol.to.equals("*"))) {
+                                        System.out.println("Matching " + r.name + " with " + lol.name);
+                                        clientList.remove(lol);
+                                        clientList.remove(r);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // Piss off
+                    }
+                } 
             } catch (Exception e) {  
             }   
         }
@@ -122,4 +154,31 @@ public class SafeWalkServer implements Serializable, Runnable {
             }
         }
     }
+    
+    public static boolean isValid (String s) {
+        String[] locations = {"CL50", "EE", "LWSN", "PMU", "PUSH", "*"};
+        String[] tokens = s.split(",");
+        int count = 0;
+        
+        for (int i = 1; i < 3; i++) {
+            for (int j = 0; j < locations.length; j++) {
+                if (tokens[i].equals(locations[j])) {
+                    count++;
+                }
+            }
+        }
+        
+        if (tokens.length != 4)
+            return false;
+        if (count != 2)
+            return false;
+        if (tokens[1].equals(tokens[2]))
+            return false;
+        if(tokens[1].equals("*"))
+            return false;
+        
+        return true;
+    }
+    
+    
 }

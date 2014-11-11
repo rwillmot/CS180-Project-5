@@ -45,8 +45,17 @@ public class SafeWalkServer implements Serializable, Runnable {
                     if (s.equals(":LIST_PENDING_REQUESTS")) { 
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
-                        out.println("Printing Pending Requests...");
-                        out.flush();
+                        out.printf("["); out.flush();
+                        int length = clientList.size();
+                        for (Request c: clientList) {
+                            out.printf("[%s, %s, %s, %s]", c.name, c.from, c.to, c.type);
+                            out.flush();
+                            length--;
+                            if (length > 0)
+                                out.printf(", ");
+                        }
+                        out.printf("]\n"); out.flush();
+                        out.close();
                         in.close();
                         client.close();
                     }
@@ -120,7 +129,25 @@ public class SafeWalkServer implements Serializable, Runnable {
                             if (!r.name.equals(lol.name)) {
                                 if (r.from.equals(lol.from)) {
                                     if (r.to.equals(lol.to) || (r.to.equals("*") ^ lol.to.equals("*"))) {
-                                        System.out.println("Matching " + r.name + " with " + lol.name);
+                                        //System.out.println("Matching " + r.name + " with " + lol.name);
+                                        
+                                        PrintWriter out = new PrintWriter(new 
+                                                                     OutputStreamWriter(lol.client.getOutputStream()));
+                                        out.flush();
+                                        out.printf("RESPONSE: %s,%s,%s,%s\n", r.name, r.from, r.to, r.type);
+                                        out.flush();
+                                        
+                                        PrintWriter outc = new PrintWriter(new 
+                                                                       OutputStreamWriter(r.client.getOutputStream()));
+                                        outc.flush();
+                                        outc.printf("RESPONSE: %s,%s,%s,%s\n", lol.name, lol.from, lol.to, lol.type);
+                                        outc.flush();
+                                        out.close();
+                                        outc.close();
+                                        in.close();
+                                        r.client.close();
+                                        lol.client.close();
+                                        
                                         clientList.remove(lol);
                                         clientList.remove(r);
                                         break;
@@ -128,8 +155,15 @@ public class SafeWalkServer implements Serializable, Runnable {
                                 }
                             }
                         }
-                    } else {
-                        // Piss off
+                    } 
+                    else {
+                        PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+                        out.flush();
+                        out.println("ERROR: Invalid Request");
+                        out.flush();
+                        out.close();
+                        in.close();
+                        client.close();
                     }
                 } 
             } catch (Exception e) {  
@@ -160,6 +194,8 @@ public class SafeWalkServer implements Serializable, Runnable {
         String[] tokens = s.split(",");
         int count = 0;
         
+        if (tokens.length != 4)
+            return false;
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < locations.length; j++) {
                 if (tokens[i].equals(locations[j])) {
@@ -168,17 +204,12 @@ public class SafeWalkServer implements Serializable, Runnable {
             }
         }
         
-        if (tokens.length != 4)
-            return false;
         if (count != 2)
             return false;
         if (tokens[1].equals(tokens[2]))
             return false;
         if(tokens[1].equals("*"))
             return false;
-        
         return true;
     }
-    
-    
 }

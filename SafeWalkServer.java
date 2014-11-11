@@ -128,7 +128,9 @@ public class SafeWalkServer implements Serializable, Runnable {
                         for (Request r : clientList) {
                             if (!r.name.equals(lol.name)) {
                                 if (r.from.equals(lol.from)) {
-                                    if (r.to.equals(lol.to) || (r.to.equals("*") ^ lol.to.equals("*"))) {
+                                    if ((r.to.equals("*") && !lol.to.equals("*")) ||
+                                         (!r.to.equals("*") && lol.to.equals("*")) || (r.to.equals(lol.to) && 
+                                                                                       !r.to.equals("*"))) {
                                         //System.out.println("Matching " + r.name + " with " + lol.name);
                                         
                                         PrintWriter out = new PrintWriter(new 

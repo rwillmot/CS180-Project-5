@@ -7,7 +7,7 @@ public class RequestHandling {
         String to;
         String type;
     }
-    ArrayList<Request> clientList;
+    private ArrayList<Request> clientList = new ArrayList<Request>();
     
     public static boolean isValid (String s) {
         String[] locations = {"CL50", "EE", "LWSN", "PMU", "PUSH", "*"};
@@ -16,7 +16,7 @@ public class RequestHandling {
         
         for (int i = 1; i < 3; i++) {
             for (int j = 0; j < locations.length; j++) {
-                if (tokens[j].equals(locations[i])) {
+                if (tokens[i].equals(locations[j])) {
                     count++;
                 }
             }
@@ -42,10 +42,15 @@ public class RequestHandling {
         lol.to = tokens[2];
         lol.type = tokens[3];
         
+        clientList.add(lol);
+        
         for (Request r : clientList) {
-            if (r.from.equals(lol.from)) {
-                if (r.to.equals(lol.to) || (r.to.equals("*") ^ lol.to.equals("*"))) {
-                    // Match the clients
+            if (!r.name.equals(lol.name)) {
+                if (r.from.equals(lol.from)) {
+                    if (r.to.equals(lol.to) || (r.to.equals("*") ^ lol.to.equals("*"))) {
+                        System.out.println("Matching " + r.name + " with " + lol.name);
+                        break;
+                    }
                 }
             }
         }

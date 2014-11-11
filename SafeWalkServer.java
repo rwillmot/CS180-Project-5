@@ -168,7 +168,8 @@ public class SafeWalkServer implements Serializable, Runnable {
                         client.close();
                     }
                 } 
-            } catch (Exception e) {  
+            } catch (Exception e) { 
+                e.printStackTrace();
             }   
         }
     }
@@ -210,7 +211,7 @@ public class SafeWalkServer implements Serializable, Runnable {
             return false;
         if (tokens[1].equals(tokens[2]))
             return false;
-        if(tokens[1].equals("*"))
+        if (tokens[1].equals("*"))
             return false;
         return true;
     }

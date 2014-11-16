@@ -19,7 +19,7 @@ public class Client implements Runnable {
         host = h;
         port = p;
         message = o;
-        timeout = t;
+	timeout = t;
     }
     String result = null;
     String getResult() {
@@ -27,17 +27,17 @@ public class Client implements Runnable {
     }
     public void run() {
         try (
-             Socket s = new Socket(host, port);
-             PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-             ) {
-                 if (timeout) s.setSoTimeout(1000);
-                 out.println(message);
-                 result = in.readLine();
-             } catch (SocketTimeoutException e) {
-             } catch (IOException e) {
-                 System.err.println(e);
-             }
+            Socket s = new Socket(host, port);
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        ) {
+	    if (timeout) s.setSoTimeout(1000);
+            out.println(message);
+            result = in.readLine();
+        } catch (SocketTimeoutException e) {
+	} catch (IOException e) {
+            System.err.println(e);
+        }
     }
     public static void main(String[] args) throws InterruptedException {
         Client c = new Client(args[0], Integer.parseInt(args[1]), args[2]);

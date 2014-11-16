@@ -73,7 +73,7 @@ public class SafeWalkServer implements Serializable, Runnable {
                         clientList.clear();
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
-                        out.println("Response: Success");
+                        out.println("RESPONSE: success");
                         out.flush();
                         out.close();
                         in.close();
@@ -93,7 +93,7 @@ public class SafeWalkServer implements Serializable, Runnable {
                         
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
-                        out.println("Response: Success");
+                        out.println("RESPONSE: success");
                         out.flush();
                         out.close();
                         in.close();
@@ -106,7 +106,7 @@ public class SafeWalkServer implements Serializable, Runnable {
                         
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
-                        out.println("ERROR: Invalid Command");
+                        out.println("ERROR: invalid request");
                         out.flush();
                         out.close();
                         in.close();
@@ -161,7 +161,7 @@ public class SafeWalkServer implements Serializable, Runnable {
                     else {
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
-                        out.println("ERROR: Invalid Request");
+                        out.println("ERROR: invalid request");
                         out.flush();
                         out.close();
                         in.close();

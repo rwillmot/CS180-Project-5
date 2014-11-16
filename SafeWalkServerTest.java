@@ -157,7 +157,7 @@ public class SafeWalkServerTest {
   ct2.join();
   st.join();
  
-  assertEquals("ERROR: connection shutdown", c1.getResult());
+  assertEquals("ERROR: connection reset", c1.getResult());
   assertEquals("RESPONSE: success", c2.getResult());
  }
  

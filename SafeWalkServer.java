@@ -88,7 +88,7 @@ public class SafeWalkServer implements Serializable, Runnable {
                         for (Request c: clientList) {
                             PrintWriter outc = new PrintWriter(new OutputStreamWriter(c.client.getOutputStream()));
                             outc.flush();
-                            outc.println("ERROR: connection shutdown");
+                            outc.println("ERROR: connection reset");
                             outc.flush();
                             outc.close();
                             c.client.close(); 

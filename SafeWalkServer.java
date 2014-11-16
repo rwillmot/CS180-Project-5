@@ -45,16 +45,20 @@ public class SafeWalkServer implements Serializable, Runnable {
                     if (s.equals(":LIST_PENDING_REQUESTS")) { 
                         PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
                         out.flush();
-                        out.printf("["); out.flush();
                         int length = clientList.size();
-                        for (Request c: clientList) {
-                            out.printf("[%s, %s, %s, %s]", c.name, c.from, c.to, c.type);
+                        if (length > 1) {
+                            for (Request c: clientList) {
+                                out.printf("[%s,%s,%s,%s]", c.name, c.from, c.to, c.type);
+                                out.flush();
+                                length--;
+                                if (length > 0)
+                                    out.printf(",");
+                            }
+                        } else {
+                            out.printf("[%s,%s,%s,%s]", clientList.get(0).name, clientList.get(0).from,
+                                       clientList.get(0).to, clientList.get(0).type);
                             out.flush();
-                            length--;
-                            if (length > 0)
-                                out.printf(", ");
                         }
-                        out.printf("]\n"); out.flush();
                         out.close();
                         in.close();
                         client.close();

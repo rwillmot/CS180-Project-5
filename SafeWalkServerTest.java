@@ -87,7 +87,7 @@ public class SafeWalkServerTest {
   ct1.join();
   ct2.join();
   
-  assertEquals("[Danushka,LWSN,PUSH,0]", c2.getResult());
+  assertEquals("[[Danushka, LWSN, PUSH, 0]]", c2.getResult());
  
   Client c3 = new Client(HOST, port, ":SHUTDOWN");
          Thread ct3 = new Thread(c3);
@@ -124,7 +124,7 @@ public class SafeWalkServerTest {
          ct3.start();
   ct3.join();
   
-  assertEquals("[Danushka,LWSN,PUSH,0],[Dinushi,LWSN,EE,0]", c3.getResult());
+  assertEquals("[[Danushka, LWSN, PUSH, 0], [Dinushi, LWSN, EE, 0]]", c3.getResult());
  
   Client c4 = new Client(HOST, port, ":SHUTDOWN");
          Thread ct4 = new Thread(c4);
@@ -449,7 +449,7 @@ public class SafeWalkServerTest {
          ct4.start();
   ct4.join();
   
-  assertEquals("[Danushka,LWSN,EE,0]", c4.getResult());
+  assertEquals("[[Danushka, LWSN, EE, 0]]", c4.getResult());
   
   Client c5 = new Client(HOST, port, ":SHUTDOWN");
          Thread ct5 = new Thread(c5);
@@ -487,7 +487,7 @@ public class SafeWalkServerTest {
          ct3.start();
   ct3.join();
   
-  assertEquals("[Danushka,LWSN,*,0],[Dinushi,LWSN,*,0]", c3.getResult());
+  assertEquals("[[Danushka, LWSN, *, 0], [Dinushi, LWSN, *, 0]]", c3.getResult());
   
   Client c4 = new Client(HOST, port, ":SHUTDOWN");
          Thread ct4 = new Thread(c4);
